@@ -13,7 +13,7 @@ export default function LoginForm() {
             const response = await axios.post('http://localhost:8080/user/token', { userId });
             // console.log(response.data);
             localStorage.setItem('userId', userId);
-            router.push('/home');
+            router.push('/concert');
         } catch (e: any) {
             console.log(e);
         }
