@@ -1,6 +1,6 @@
 import ConcertList from '@/components/concertList';
 
-export default function Home() {
+export default function ConcertPage() {
     return (
         <>
             <ConcertList />

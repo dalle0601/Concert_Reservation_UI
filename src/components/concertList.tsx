@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface ConcertItem {
     concert: Concert;
@@ -17,6 +18,7 @@ const ConcertList = () => {
     const [concerts, setConcerts] = useState<ConcertItem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchConcerts = async () => {
@@ -49,6 +51,10 @@ const ConcertList = () => {
         fetchConcerts();
     }, []);
 
+    const handleSelectConcert = (concertId: number) => {
+        router.push(`concert/${concertId}`);
+    };
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 
@@ -65,6 +71,7 @@ const ConcertList = () => {
                             <p>Date: {new Date(concertItem.concert.concertDate).toLocaleString()}</p>
                             <p>Available Seats: {concertItem.availableSeatCount}</p>
                             <p>Created At: {new Date(concertItem.concert.createdAt).toLocaleString()}</p>
+                            <button onClick={() => handleSelectConcert(concertItem.concert.concertId)}>선택</button>
                         </li>
                     ))}
                 </ul>
