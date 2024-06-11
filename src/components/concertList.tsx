@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
 
 interface ConcertItem {
     concert: Concert;
@@ -19,19 +20,18 @@ const ConcertList = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
+    const { data: session } = useSession();
 
     useEffect(() => {
         const fetchConcerts = async () => {
-            let userId = localStorage.getItem('userId');
-            if (userId === null) {
-                userId = '';
-            }
+            const userId = session?.user?.id || '';
+
             try {
                 const response = await fetch('http://localhost:8080/concert/date', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        userId: '1',
+                        userId: userId,
                     },
                 });
 
@@ -48,11 +48,18 @@ const ConcertList = () => {
                 setLoading(false);
             }
         };
-        fetchConcerts();
-    }, []);
+
+        if (session) {
+            fetchConcerts();
+        }
+    }, [session]);
 
     const handleSelectConcert = (concertId: number) => {
         router.push(`concert/${concertId}`);
+    };
+
+    const handleLogout = () => {
+        signOut({ callbackUrl: '/' });
     };
 
     if (loading) return <p>Loading...</p>;
@@ -61,6 +68,8 @@ const ConcertList = () => {
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-4">Available Concerts</h1>
+            <button onClick={handleLogout}>로그아웃</button>
+
             {concerts.length === 0 ? (
                 <p>No concerts available.</p>
             ) : (
