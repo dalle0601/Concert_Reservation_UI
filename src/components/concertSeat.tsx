@@ -66,9 +66,33 @@ const ConcertSeat: React.FC<ConcertSeatProps> = ({ concertId }) => {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 
-    const handleSelectSeat = (seat_id: number) => {
-        console.log(`Seat ${seat_id} selected`);
-        // You can handle seat selection here (e.g., update state, make an API call, etc.)
+    const handleSelectSeat = async (seat: Seat) => {
+        const userId = localStorage.getItem('userId') || '';
+        const reservationData = {
+            concertId: concertId,
+            seatId: seat.seat_id,
+            userId: userId,
+            cost: seat.cost,
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/reservation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(reservationData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to reserve seat');
+            }
+
+            const result = await response.json();
+            console.log('Reservation successful', result);
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     return (
@@ -102,7 +126,7 @@ const ConcertSeat: React.FC<ConcertSeatProps> = ({ concertId }) => {
                             className={`p-2 border rounded ${isAvailable ? 'bg-green-500' : 'bg-red-500'} ${
                                 seat ? '' : 'bg-gray-300'
                             }`}
-                            onClick={() => isAvailable && seat && handleSelectSeat(seat.seat_id)}
+                            onClick={() => isAvailable && seat && handleSelectSeat(seat)}
                             disabled={!isAvailable}
                         >
                             {seat ? seat.seat_number : seatNumber}
