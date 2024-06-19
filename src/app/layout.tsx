@@ -1,5 +1,8 @@
+import Header from '@/components/header';
 import SessionProvider from '@/components/SessionProvider';
 import type { Metadata } from 'next';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
 
 export const metadata: Metadata = {
@@ -11,12 +14,16 @@ interface RootLayoutProps {
     children: ReactNode;
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+const RootLayout = ({ children }: RootLayoutProps) => {
     return (
         <html lang="kr">
             <body>
-                <SessionProvider>{children}</SessionProvider>
+                <SessionProvider>
+                    <Header />
+                    <main>{children}</main>
+                </SessionProvider>
             </body>
         </html>
     );
-}
+};
+export default RootLayout;
