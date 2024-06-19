@@ -19,21 +19,5 @@ export default function HomePage() {
         }
     }, [session, router]);
 
-    // return <>{!session ? <>hello</> : <LoginForm />}</>;
-    // if (!session) {
     return <LoginForm handleLogin={handleLogin} />;
-    // }
-
-    // return (
-    //     <div>
-    //         <h1>콘서트 예매 서비스</h1>
-    //         <h2>콘서트 리스트</h2>
-    //         <ul>
-    //             <li>콘서트 A</li>
-    //             <li>콘서트 B</li>
-    //             <li>콘서트 C</li>
-    //         </ul>
-    //         <button onClick={() => signOut()}>로그아웃</button>
-    //     </div>
-    // );
 }
