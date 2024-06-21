@@ -1,4 +1,5 @@
 'use client';
+import { checkToken } from '@/utils/token';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -26,15 +27,27 @@ const ConcertSeat = ({ concertId }: ConcertSeatProps) => {
     const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [tokenValid, setTokenValid] = useState<boolean>(false);
     const router = useRouter();
     const { data: session } = useSession();
 
     useEffect(() => {
-        const fetchSeats = async () => {
-            const userId = session?.user?.id || '';
+        const verifyTokenAndFetchSeats = async () => {
+            if (session) {
+                const userId = session.user.id;
+                const valid = await checkToken(userId);
 
+                if (valid) {
+                    setTokenValid(true);
+                    await fetchSeats(userId);
+                } else {
+                    router.push('/waiting');
+                }
+            }
+        };
+
+        const fetchSeats = async (userId: string) => {
             try {
-                console.log(concertId);
                 const response = await fetch(`http://localhost:8080/concert/${concertId}/seat`, {
                     method: 'GET',
                     headers: {
@@ -55,8 +68,9 @@ const ConcertSeat = ({ concertId }: ConcertSeatProps) => {
                 setLoading(false);
             }
         };
-        fetchSeats();
-    }, [concertId]);
+
+        verifyTokenAndFetchSeats();
+    }, [session, concertId, router]);
 
     const handleSelectSeat = (seat: Seat) => {
         setSelectedSeat(seat);
@@ -95,6 +109,7 @@ const ConcertSeat = ({ concertId }: ConcertSeatProps) => {
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
+    if (!tokenValid) return <p>Waiting for token verification...</p>;
 
     return (
         <div className="p-4">

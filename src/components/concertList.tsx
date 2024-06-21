@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
+import { checkToken } from '@/utils/token';
 
 interface ConcertItem {
     concert: Concert;
@@ -19,13 +20,12 @@ const ConcertList = () => {
     const [concerts, setConcerts] = useState<ConcertItem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [tokenValid, setTokenValid] = useState<boolean>(false);
     const router = useRouter();
     const { data: session } = useSession();
 
     useEffect(() => {
-        const fetchConcerts = async () => {
-            const userId = session?.user?.id || '';
-
+        const fetchConcerts = async (userId: string) => {
             try {
                 const response = await fetch('http://localhost:8080/concert/date', {
                     method: 'GET',
@@ -40,7 +40,6 @@ const ConcertList = () => {
                 }
 
                 const data = await response.json();
-                console.log(data);
                 setConcerts(data.result.concertList || []);
             } catch (error) {
                 setError('Failed to fetch concerts');
@@ -49,10 +48,22 @@ const ConcertList = () => {
             }
         };
 
-        if (session) {
-            fetchConcerts();
-        }
-    }, [session]);
+        const verifyToken = async () => {
+            if (session) {
+                const userId = session.user.id;
+                const tokenValid = await checkToken(userId);
+
+                if (tokenValid) {
+                    setTokenValid(true);
+                    fetchConcerts(userId);
+                } else {
+                    router.push('/waiting');
+                }
+            }
+        };
+
+        verifyToken();
+    }, [session, router]);
 
     const handleSelectConcert = (concertId: number) => {
         router.push(`concert/${concertId}`);
@@ -64,6 +75,7 @@ const ConcertList = () => {
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
+    if (!tokenValid) return <p>Waiting for token verification...</p>;
 
     return (
         <div className="p-4">
