@@ -77,7 +77,9 @@ const Reservation = () => {
                 // 결제 성공 후 예약 상태를 업데이트
                 setReservations((prevReservations) =>
                     prevReservations.map((reservation) =>
-                        reservation.reservationId === reservationId ? { ...reservation, status: 'paid' } : reservation
+                        reservation.reservationId === reservationId
+                            ? { ...reservation, status: 'reserved' }
+                            : reservation
                     )
                 );
             }

@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { checkToken } from '@/utils/token';
 
@@ -28,7 +28,17 @@ const WaitingPage = () => {
 
     if (loading) return <p>Loading...</p>;
 
-    return <p>Waiting for token verification...</p>;
+    const handleLogout = () => {
+        signOut({ callbackUrl: '/' });
+    };
+
+    return (
+        <>
+            <button onClick={handleLogout}>로그아웃</button>
+
+            <p>Waiting for token verification...</p>
+        </>
+    );
 };
 
 export default WaitingPage;

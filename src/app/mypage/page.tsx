@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import PointRechargeModal from '@/components/pointChargeModal';
 
 interface User {
     userId: string;
@@ -12,6 +13,7 @@ const MyPage = () => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [showModal, setShowModal] = useState<boolean>(false);
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -31,8 +33,6 @@ const MyPage = () => {
                 }
 
                 const data = await response.json();
-                debugger;
-
                 setUser({ userId: data.userId, point: data.point });
             } catch (error) {
                 setError('Failed to fetch user data');
@@ -41,29 +41,10 @@ const MyPage = () => {
             }
         };
         fetchUserData();
-    }, []);
+    }, [session]);
 
-    const handlePointRecharge = async () => {
-        // const userId = session?.user?.id || '';
-        // const chargePointData = {
-        //     userId: parseInt(userId, 10),
-        //     point: point
-        // };
-        // try {
-        //     const response = await fetch(`http://localhost:8080/point/charge`, {
-        //         method: 'PATCH',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //     });
-        //     if (!response.ok) {
-        //         throw new Error('Failed to recharge points');
-        //     }
-        //     const result = await response.json();
-        //     setUser((prevUser) => prevUser && { ...prevUser, point: result.newPoint });
-        // } catch (error) {
-        //     console.error('Error:', error);
-        // }
+    const handleRecharge = (newPoint: number) => {
+        setUser((prevUser) => prevUser && { ...prevUser, point: newPoint });
     };
 
     if (loading) return <p>Loading...</p>;
@@ -78,7 +59,7 @@ const MyPage = () => {
                     <p className="text-lg mb-4">Points: {user.point}</p>
                     <button
                         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mb-4"
-                        onClick={handlePointRecharge}
+                        onClick={() => setShowModal(true)}
                     >
                         포인트 충전
                     </button>
@@ -89,6 +70,13 @@ const MyPage = () => {
                         예약 현황 보기
                     </button>
                 </div>
+            )}
+            {showModal && user && (
+                <PointRechargeModal
+                    userId={user.userId}
+                    onClose={() => setShowModal(false)}
+                    onRecharge={handleRecharge}
+                />
             )}
         </div>
     );
