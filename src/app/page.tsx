@@ -31,5 +31,9 @@ export default function HomePage() {
         verifyToken();
     }, [session, router]);
 
-    return <LoginForm handleLogin={handleLogin} />;
+    return (
+        <div className="flex justify-center items-center h-screen bg-gray-100">
+            <LoginForm handleLogin={handleLogin} />
+        </div>
+    );
 }

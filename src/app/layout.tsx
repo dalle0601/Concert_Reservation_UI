@@ -1,8 +1,7 @@
 import Header from '@/components/header';
 import SessionProvider from '@/components/SessionProvider';
 import type { Metadata } from 'next';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import './globals.css';
 import { ReactNode } from 'react';
 
 export const metadata: Metadata = {
