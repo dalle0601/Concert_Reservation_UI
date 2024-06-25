@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 
 interface LoginFormProps {
     handleLogin: (userId: string) => void;
@@ -10,7 +9,6 @@ interface LoginFormProps {
 
 export default function LoginForm({ handleLogin }: LoginFormProps) {
     const [userId, setUserId] = useState('');
-    const { data: session } = useSession();
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -25,25 +23,23 @@ export default function LoginForm({ handleLogin }: LoginFormProps) {
 
     return (
         <div className="flex justify-center items-center bg-gray-100">
-            <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        placeholder="USER ID"
-                        type="text"
-                        id="userid"
-                        value={userId}
-                        onChange={(e) => setUserId(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
-                        required
-                    />
-                    <button
-                        type="submit"
-                        className="w-full bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:bg-indigo-700"
-                    >
-                        로그인
-                    </button>
-                </form>
-            </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                    placeholder="USER ID"
+                    type="text"
+                    id="userid"
+                    value={userId}
+                    onChange={(e) => setUserId(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    required
+                />
+                <button
+                    type="submit"
+                    className="w-full bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:bg-indigo-700"
+                >
+                    로그인
+                </button>
+            </form>
         </div>
     );
 }

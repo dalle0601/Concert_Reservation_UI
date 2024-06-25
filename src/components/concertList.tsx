@@ -10,10 +10,12 @@ interface ConcertItem {
 }
 
 interface Concert {
+    imagePath: string | undefined;
     concertId: number;
     concertTitle: string;
     concertDate: string;
     createdAt: string;
+    concertImage: string; // 추가: 콘서트 이미지 URL 필드
 }
 
 const ConcertList = () => {
@@ -69,33 +71,39 @@ const ConcertList = () => {
         router.push(`concert/${concertId}`);
     };
 
-    const handleLogout = () => {
-        signOut({ callbackUrl: '/' });
-    };
-
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
     if (!tokenValid) return <p>Waiting for token verification...</p>;
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Available Concerts</h1>
-            <button onClick={handleLogout}>로그아웃</button>
+        <div className="p-4 w-full">
+            <h1 className="text-2xl font-bold mb-4">콘서트 둘러보기</h1>
 
             {concerts.length === 0 ? (
                 <p>No concerts available.</p>
             ) : (
-                <ul className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {concerts.map((concertItem) => (
-                        <li key={concertItem.concert.concertId} className="p-4 border rounded shadow">
-                            <h2 className="text-xl font-semibold">{concertItem.concert.concertTitle}</h2>
-                            <p>Date: {new Date(concertItem.concert.concertDate).toLocaleString()}</p>
-                            <p>Available Seats: {concertItem.availableSeatCount}</p>
-                            <p>Created At: {new Date(concertItem.concert.createdAt).toLocaleString()}</p>
-                            <button onClick={() => handleSelectConcert(concertItem.concert.concertId)}>선택</button>
-                        </li>
+                        <div
+                            key={concertItem.concert.concertId}
+                            className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg cursor-pointer"
+                            onClick={() => handleSelectConcert(concertItem.concert.concertId)}
+                        >
+                            <img
+                                src={concertItem.concert.imagePath}
+                                alt={concertItem.concert.concertTitle}
+                                className="w-full h-48 object-cover"
+                            />
+                            <div className="p-4">
+                                <h2 className="text-xl font-semibold">{concertItem.concert.concertTitle}</h2>
+                                <p className="text-gray-600">
+                                    날짜: {new Date(concertItem.concert.concertDate).toLocaleString()}
+                                </p>
+                                <p className="text-gray-600">예약가능 좌석: {concertItem.availableSeatCount}</p>
+                            </div>
+                        </div>
                     ))}
-                </ul>
+                </div>
             )}
         </div>
     );

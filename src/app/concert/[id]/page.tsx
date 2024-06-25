@@ -9,14 +9,14 @@ export default function ConcertSeatPage() {
 
     // id 값이 아직 설정되지 않았을 경우를 처리
     if (!id || (Array.isArray(id) && id.length === 0)) {
-        return <div>Loading...</div>;
+        return <div className="flex justify-center items-center h-screen">Loading...</div>;
     }
 
     const concertId = Array.isArray(id) ? id[0] : id;
 
     return (
-        <>
+        <div className="container mx-auto px-4 py-8">
             <ConcertSeat concertId={concertId} />
-        </>
+        </div>
     );
 }

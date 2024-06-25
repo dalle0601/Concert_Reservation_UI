@@ -32,7 +32,7 @@ export default function HomePage() {
     }, [session, router]);
 
     return (
-        <div className="flex justify-center items-center h-screen bg-gray-100">
+        <div className="flex justify-center items-center bg-gray-100 pb-20">
             <LoginForm handleLogin={handleLogin} />
         </div>
     );

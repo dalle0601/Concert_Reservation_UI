@@ -1,3 +1,4 @@
+// root layout (e.g., app/layout.tsx)
 import Header from '@/components/header';
 import SessionProvider from '@/components/SessionProvider';
 import type { Metadata } from 'next';
@@ -16,10 +17,10 @@ interface RootLayoutProps {
 const RootLayout = ({ children }: RootLayoutProps) => {
     return (
         <html lang="kr">
-            <body>
+            <body className="bg-gray-100">
                 <SessionProvider>
                     <Header />
-                    <main>{children}</main>
+                    <main className="flex flex-col items-center justify-center min-h-screen">{children}</main>
                 </SessionProvider>
             </body>
         </html>
