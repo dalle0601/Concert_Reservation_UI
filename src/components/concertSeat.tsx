@@ -3,6 +3,9 @@ import { checkToken } from '@/utils/token';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { ConditionalWrap } from './ConditionalWrap';
+import { SeatStatus } from './SeatStatus';
+import useFetchData from './useFetchData';
 
 interface Seat {
     seat_id: number;
@@ -25,54 +28,16 @@ interface ConcertSeatProps {
 const ConcertSeat = ({ concertId }: ConcertSeatProps) => {
     const [seats, setSeats] = useState<Seat[]>([]);
     const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [tokenValid, setTokenValid] = useState<boolean>(false);
     const router = useRouter();
     const { data: session } = useSession();
+    const { loading, error } = useFetchData(`http://localhost:8080/concert/${concertId}/seat`, setSeats);
 
-    useEffect(() => {
-        const verifyTokenAndFetchSeats = async () => {
-            if (session) {
-                const userId = session.user.id;
-                const valid = await checkToken(userId);
+    const handleFindSeat = (seatName: string) => {
+        return seats.find((s) => s.seat_number === seatName);
+    };
 
-                if (valid) {
-                    setTokenValid(true);
-                    await fetchSeats(userId);
-                } else {
-                    router.push('/waiting');
-                }
-            }
-        };
-
-        const fetchSeats = async (userId: string) => {
-            try {
-                const response = await fetch(`http://localhost:8080/concert/${concertId}/seat`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        userId: userId,
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-                setSeats(data.result.seatList || []);
-            } catch (error) {
-                setError('Failed to fetch seats');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        verifyTokenAndFetchSeats();
-    }, [session, concertId, router]);
-
-    const handleSelectSeat = (seat: Seat) => {
+    const handleSelectSeat = (seatName: string) => {
+        const seat: any = handleFindSeat(seatName);
         setSelectedSeat(seat);
     };
 
@@ -81,9 +46,9 @@ const ConcertSeat = ({ concertId }: ConcertSeatProps) => {
 
         const userId = session?.user?.id || '';
         const reservationData = {
-            concertId: parseInt(concertId, 10),
+            concertId: concertId,
             seatId: selectedSeat.seat_id,
-            userId: parseInt(userId, 10),
+            userId: userId,
             cost: selectedSeat.cost,
         };
 
@@ -107,9 +72,19 @@ const ConcertSeat = ({ concertId }: ConcertSeatProps) => {
         }
     };
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>{error}</p>;
-    if (!tokenValid) return <p>Waiting for token verification...</p>;
+    const setSeatName = (index: number) => {
+        if (index < 25) {
+            return `A${index + 1}`;
+        } else {
+            return `B${index - 24}`;
+        }
+    };
+
+    const setIsAvaliable = (index: number) => {
+        const seat = handleFindSeat(setSeatName(index));
+        if (!seat || seat.seat_status !== 'available') return false;
+        else return true;
+    };
 
     return (
         <div className="p-4">
@@ -120,46 +95,31 @@ const ConcertSeat = ({ concertId }: ConcertSeatProps) => {
             >
                 Back to Concert List
             </button>
-            <div className="grid grid-cols-10 gap-4">
-                {Array.from({ length: 50 }, (_, i) => {
-                    let seatNumber = (i + 1).toString();
-                    if (i < 25) {
-                        seatNumber = 'A' + (i + 1);
-                    } else {
-                        seatNumber = 'B' + (i - 24);
-                    }
-                    const seat = seats.find((s) => s.seat_number === seatNumber);
-                    let isAvailable = false;
-                    if (seat && seat.seat_status === 'available') {
-                        isAvailable = true;
-                    }
-
-                    return (
-                        <button
-                            key={i}
-                            className={`p-2 border rounded ${isAvailable ? 'bg-green-500' : 'bg-red-500'} ${
-                                seat ? (selectedSeat?.seat_id === seat.seat_id ? 'bg-yellow-500' : '') : 'bg-gray-300'
-                            }`}
-                            onClick={() => isAvailable && seat && handleSelectSeat(seat)}
-                            disabled={!isAvailable}
-                        >
-                            {seat ? seat.seat_number : seatNumber}
-                        </button>
-                    );
-                })}
-            </div>
-            {selectedSeat && (
-                <div className="mt-4">
-                    <p>Selected Seat: {selectedSeat.seat_number}</p>
-                    <p>Cost: {selectedSeat.cost}</p>
-                    <button
-                        className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
-                        onClick={handleReserveSeat}
-                    >
-                        선택좌석 예약하기
-                    </button>
+            <ConditionalWrap isLoading={loading} isError={error} data={[0]}>
+                <div className="grid grid-cols-10 gap-4">
+                    {Array.from({ length: 50 }, (_, index) => (
+                        <SeatStatus
+                            key={index}
+                            seatName={setSeatName(index)}
+                            isAvailable={setIsAvaliable(index)}
+                            isSelected={selectedSeat?.seat_number === setSeatName(index)}
+                            onClick={handleSelectSeat}
+                        />
+                    ))}
                 </div>
-            )}
+                {selectedSeat && (
+                    <div className="mt-4">
+                        <p>Selected Seat: {selectedSeat.seat_number}</p>
+                        <p>Cost: {selectedSeat.cost}</p>
+                        <button
+                            className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                            onClick={handleReserveSeat}
+                        >
+                            선택좌석 예약하기
+                        </button>
+                    </div>
+                )}
+            </ConditionalWrap>
         </div>
     );
 };

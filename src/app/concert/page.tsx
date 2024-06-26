@@ -1,5 +1,5 @@
 'use client';
-import ConcertList from '@/components/concertList';
+import ConcertList from '@/components/ConcertList';
 import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -24,9 +24,5 @@ export default function ConcertPage() {
         verifyToken();
     }, [session, router]);
 
-    return (
-        <>
-            <ConcertList />
-        </>
-    );
+    return <ConcertList />;
 }
