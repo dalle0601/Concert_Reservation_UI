@@ -1,9 +1,10 @@
 'use client';
-import LoginForm from '@/components/loginForm';
+import { LoginForm } from '@/components/LoginForm';
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { checkToken } from '@/utils/token';
+import { SectionTitle } from '@/components/common/SectionTitle'; // SectionTitle 가져오기
 
 export default function HomePage() {
     const { data: session } = useSession();
@@ -32,8 +33,10 @@ export default function HomePage() {
     }, [session, router]);
 
     return (
-        <div className="flex justify-center items-center bg-gray-100 pb-20">
-            <LoginForm handleLogin={handleLogin} />
+        <div className="flex flex-col justify-start items-center bg-gray-100 min-h-screen w-full">
+            <div className="flex justify-center items-center w-full flex-1">
+                <LoginForm handleLogin={handleLogin} />
+            </div>
         </div>
     );
 }

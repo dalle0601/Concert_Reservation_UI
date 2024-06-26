@@ -1,11 +1,11 @@
 'use client';
-import { checkToken } from '@/utils/token';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { ConditionalWrap } from './ConditionalWrap';
-import { SeatStatus } from './SeatStatus';
-import useFetchData from './useFetchData';
+import React, { useState } from 'react';
+import { ConditionalWrap } from '../common/ConditionalWrap';
+import { SeatStatus } from '../common/SeatStatus';
+import useFetchData from '../useFetchData';
+import { SectionTitle } from '../common/SectionTitle';
 
 interface Seat {
     seat_id: number;
@@ -25,7 +25,7 @@ interface ConcertSeatProps {
     concertId: string;
 }
 
-const ConcertSeat = ({ concertId }: ConcertSeatProps) => {
+export function ConcertSeat({ concertId }: ConcertSeatProps) {
     const [seats, setSeats] = useState<Seat[]>([]);
     const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
     const router = useRouter();
@@ -87,41 +87,41 @@ const ConcertSeat = ({ concertId }: ConcertSeatProps) => {
     };
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Concert Seat</h1>
-            <button
-                className="mt-4 mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-                onClick={() => router.back()}
-            >
-                Back to Concert List
-            </button>
-            <ConditionalWrap isLoading={loading} isError={error} data={[0]}>
-                <div className="grid grid-cols-10 gap-4">
-                    {Array.from({ length: 50 }, (_, index) => (
-                        <SeatStatus
-                            key={index}
-                            seatName={setSeatName(index)}
-                            isAvailable={setIsAvaliable(index)}
-                            isSelected={selectedSeat?.seat_number === setSeatName(index)}
-                            onClick={handleSelectSeat}
-                        />
-                    ))}
+        <div className="flex flex-col justify-start items-center min-h-screen w-full">
+            <SectionTitle title="좌석 확인" />
+            <div className="flex flex-1 w-full">
+                <div className="flex-1 flex justify-center items-start p-4">
+                    <ConditionalWrap isLoading={loading} isError={error} data={[0]}>
+                        <div className="grid grid-cols-10 gap-4 w-full h-3/4">
+                            {Array.from({ length: 50 }, (_, index) => (
+                                <SeatStatus
+                                    key={index}
+                                    seatName={setSeatName(index)}
+                                    isAvailable={setIsAvaliable(index)}
+                                    isSelected={selectedSeat?.seat_number === setSeatName(index)}
+                                    onClick={handleSelectSeat}
+                                />
+                            ))}
+                        </div>
+                    </ConditionalWrap>
                 </div>
-                {selectedSeat && (
-                    <div className="mt-4">
-                        <p>Selected Seat: {selectedSeat.seat_number}</p>
-                        <p>Cost: {selectedSeat.cost}</p>
-                        <button
-                            className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
-                            onClick={handleReserveSeat}
-                        >
-                            선택좌석 예약하기
-                        </button>
-                    </div>
-                )}
-            </ConditionalWrap>
+                <div className="flex-1 flex flex-col justify-start items-center p-4 h-full">
+                    {selectedSeat ? (
+                        <>
+                            <p>선택된 좌석: {selectedSeat.seat_number}</p>
+                            <p>가격: {selectedSeat.cost}</p>
+                            <button
+                                className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                                onClick={handleReserveSeat}
+                            >
+                                선택좌석 예약하기
+                            </button>
+                        </>
+                    ) : (
+                        <p>좌석을 선택하세요.</p>
+                    )}
+                </div>
+            </div>
         </div>
     );
-};
-
-export default ConcertSeat;
+}

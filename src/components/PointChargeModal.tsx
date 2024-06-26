@@ -6,7 +6,7 @@ interface PointChargeModalProps {
     onRecharge: (newPoint: number) => void;
 }
 
-const PointChargeModal = ({ userId, onClose, onRecharge }: PointChargeModalProps) => {
+export function PointChargeModal({ userId, onClose, onRecharge }: PointChargeModalProps) {
     const [point, setPoint] = useState('');
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -74,6 +74,4 @@ const PointChargeModal = ({ userId, onClose, onRecharge }: PointChargeModalProps
             </div>
         </div>
     );
-};
-
-export default PointChargeModal;
+}

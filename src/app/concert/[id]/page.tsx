@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import ConcertSeat from '@/components/concertSeat';
+import { ConcertSeat } from '@/components/concert/ConcertSeat';
 import { useParams } from 'next/navigation';
 
 export default function ConcertSeatPage() {
@@ -14,9 +14,5 @@ export default function ConcertSeatPage() {
 
     const concertId = Array.isArray(id) ? id[0] : id;
 
-    return (
-        <div className="container mx-auto px-4 py-8">
-            <ConcertSeat concertId={concertId} />
-        </div>
-    );
+    return <ConcertSeat concertId={concertId} />;
 }

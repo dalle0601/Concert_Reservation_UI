@@ -4,7 +4,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { checkToken } from '@/utils/token';
 
-const WaitingPage = () => {
+export default function WaitingPage() {
     const { data: session } = useSession();
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
@@ -39,6 +39,4 @@ const WaitingPage = () => {
             <p>Waiting for token verification...</p>
         </>
     );
-};
-
-export default WaitingPage;
+}

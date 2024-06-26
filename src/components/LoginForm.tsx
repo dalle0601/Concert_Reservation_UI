@@ -7,7 +7,7 @@ interface LoginFormProps {
     handleLogin: (userId: string) => void;
 }
 
-export default function LoginForm({ handleLogin }: LoginFormProps) {
+export function LoginForm({ handleLogin }: LoginFormProps) {
     const [userId, setUserId] = useState('');
     const router = useRouter();
 
@@ -22,7 +22,7 @@ export default function LoginForm({ handleLogin }: LoginFormProps) {
     };
 
     return (
-        <div className="flex justify-center items-center bg-gray-100">
+        <div className="pb-32 flex justify-center items-center bg-gray-100">
             <form onSubmit={handleSubmit} className="space-y-4">
                 <input
                     placeholder="USER ID"

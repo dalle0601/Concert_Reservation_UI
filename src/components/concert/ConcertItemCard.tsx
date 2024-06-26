@@ -1,8 +1,8 @@
-interface ImageCardType {
+interface ConcertItemCardType {
     data: any;
     onClick: (id: number) => void;
 }
-export function ImageCard({ data, onClick }: ImageCardType) {
+export function ConcertItemCard({ data, onClick }: ConcertItemCardType) {
     return (
         <div
             className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg cursor-pointer"

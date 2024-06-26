@@ -2,14 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import PointRechargeModal from '@/components/pointChargeModal';
+import { PointChargeModal } from '@/components/PointChargeModal';
 
 interface User {
     userId: string;
     point: number;
 }
 
-const MyPage = () => {
+export default function MyPage() {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -72,7 +72,7 @@ const MyPage = () => {
                 </div>
             )}
             {showModal && user && (
-                <PointRechargeModal
+                <PointChargeModal
                     userId={user.userId}
                     onClose={() => setShowModal(false)}
                     onRecharge={handleRecharge}
@@ -80,6 +80,4 @@ const MyPage = () => {
             )}
         </div>
     );
-};
-
-export default MyPage;
+}

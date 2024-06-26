@@ -1,6 +1,5 @@
-// root layout (e.g., app/layout.tsx)
-import Header from '@/components/header';
-import SessionProvider from '@/components/SessionProvider';
+import { Header } from '@/components/Header';
+import { SessionProvider } from '@/components/SessionProvider';
 import type { Metadata } from 'next';
 import './globals.css';
 import { ReactNode } from 'react';
@@ -14,16 +13,17 @@ interface RootLayoutProps {
     children: ReactNode;
 }
 
-const RootLayout = ({ children }: RootLayoutProps) => {
+export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="kr">
             <body className="bg-gray-100">
                 <SessionProvider>
                     <Header />
-                    <main className="flex flex-col items-center justify-center min-h-screen">{children}</main>
+                    <main className="flex flex-col items-center justify-start min-h-screen pt-[70px] w-full">
+                        {children}
+                    </main>
                 </SessionProvider>
             </body>
         </html>
     );
-};
-export default RootLayout;
+}
