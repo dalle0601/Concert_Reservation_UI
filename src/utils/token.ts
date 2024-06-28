@@ -1,5 +1,6 @@
-// src/utils/token.ts
-export const checkToken = async (userId: string): Promise<boolean> => {
+export const checkToken = async (
+    userId: string
+): Promise<{ message: string; token: string; expiredTime: string; queuePosition: string }> => {
     try {
         const response = await fetch(`http://localhost:8080/user/${userId}/token`, {
             method: 'GET',
@@ -13,9 +14,9 @@ export const checkToken = async (userId: string): Promise<boolean> => {
         }
 
         const data = await response.json();
-        return data.token;
+        return data;
     } catch (error) {
-        console.error('Failed to verify token', error);
-        return false;
+        console.error('토큰 확인에 실패했습니다.', error);
+        return { message: '토큰 확인 실패', token: 'null', expiredTime: 'null', queuePosition: 'null' };
     }
 };

@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ConditionalWrap } from '../common/ConditionalWrap';
 import { ConcertItemCard } from './ConcertItemCard';
-import useFetchData from '../useFetchData';
+import { useFetchData } from '../../hooks/useFetchData';
+import { SectionTitle } from '../common/SectionTitle';
 
 interface ConcertItem {
     concert: Concert;
@@ -15,7 +16,7 @@ interface Concert {
     concertTitle: string;
     concertDate: string;
     createdAt: string;
-    concertImage: string;
+    concertImage: string; // 추가: 콘서트 이미지 URL 필드
 }
 
 export function ConcertList() {
@@ -28,7 +29,7 @@ export function ConcertList() {
     };
 
     return (
-        <div className="flex justify-center items-center w-full flex-1">
+        <div className="p-4 w-full h-full flex flex-col items-center justify-center m-auto ">
             <ConditionalWrap isLoading={loading} isError={error} data={concerts}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {concerts.map((concertItem) => (

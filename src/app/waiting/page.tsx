@@ -1,12 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { checkToken } from '@/utils/token';
 
 export default function WaitingPage() {
     const { data: session } = useSession();
     const router = useRouter();
+    const [queuePosition, setQueuePosition] = useState<String>('0');
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -14,8 +15,9 @@ export default function WaitingPage() {
             if (session) {
                 const userId = session.user.id;
                 const tokenValid = await checkToken(userId);
-
-                if (tokenValid) {
+                console.log(tokenValid);
+                setQueuePosition(tokenValid.queuePosition);
+                if (tokenValid.token !== null) {
                     clearInterval(interval);
                     router.push('/concert');
                 }
@@ -28,15 +30,9 @@ export default function WaitingPage() {
 
     if (loading) return <p>Loading...</p>;
 
-    const handleLogout = () => {
-        signOut({ callbackUrl: '/' });
-    };
-
     return (
         <>
-            <button onClick={handleLogout}>로그아웃</button>
-
-            <p>Waiting for token verification...</p>
+            <p>대기 인원 : {queuePosition}</p>
         </>
     );
 }

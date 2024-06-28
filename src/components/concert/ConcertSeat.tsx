@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { ConditionalWrap } from '../common/ConditionalWrap';
 import { SeatStatus } from '../common/SeatStatus';
-import useFetchData from '../useFetchData';
+import { useFetchData } from '../../hooks/useFetchData';
 import { SectionTitle } from '../common/SectionTitle';
 
 interface Seat {

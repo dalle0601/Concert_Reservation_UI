@@ -1,4 +1,3 @@
-// components/header.tsx
 'use client';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';

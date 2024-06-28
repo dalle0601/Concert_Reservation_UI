@@ -1,9 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { ConditionalWrap } from '../common/ConditionalWrap';
-import useFetchData from '../useFetchData';
-import { SectionTitle } from '../common/SectionTitle';
+import { useFetchData } from '../../hooks/useFetchData';
 import { useSession } from 'next-auth/react';
 import { ReservationCard } from './ReservationCard';
 
@@ -18,39 +16,13 @@ interface Reservation {
 
 export function ReservationList() {
     const [reservations, setReservations] = useState<Reservation[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
     const { data: session } = useSession();
 
-    useEffect(() => {
-        const fetchReservations = async () => {
-            const userId = session?.user?.id || '';
-            try {
-                const response = await fetch(`http://localhost:8080/user/${userId}/reservations`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-                if (Array.isArray(data.result.reservation)) {
-                    setReservations(data.result.reservation);
-                } else {
-                    throw new Error('Invalid data format');
-                }
-            } catch (error) {
-                setError('Failed to fetch reservations');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchReservations();
-    }, []);
+    const { loading, error } = useFetchData(
+        `http://localhost:8080/user/${session?.user?.id}/reservations`,
+        setReservations,
+        false
+    );
 
     const handlePayment = async (reservationId: number) => {
         const userId = session?.user?.id || '';

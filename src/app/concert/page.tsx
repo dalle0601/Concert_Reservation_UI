@@ -16,7 +16,7 @@ export default function ConcertPage() {
                 const userId = session.user.id;
                 const tokenValid = await checkToken(userId);
 
-                if (!tokenValid) {
+                if (tokenValid.token === null) {
                     router.push('/waiting');
                 }
             }

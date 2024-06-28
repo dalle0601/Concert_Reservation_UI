@@ -29,9 +29,8 @@ export function PointChargeModal({ userId, onClose, onRecharge }: PointChargeMod
             }
 
             const result = await response.json();
-            debugger;
-            if (result.message === '포인트 충전 성공') {
-                onRecharge(result.pointHistory.point);
+            if (result.result.message === '포인트 충전 성공') {
+                onRecharge(result.result.pointHistory.point);
             } else {
                 alert('포인트 충전에 실패했습니다.');
             }

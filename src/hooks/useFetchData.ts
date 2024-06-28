@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-function useFetchData(url: string, setData: Dispatch<SetStateAction<any>>) {
+export function useFetchData(url: string, setData: Dispatch<SetStateAction<any>>, shouldCheckToken: boolean = true) {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [tokenValid, setTokenValid] = useState<boolean>(false);
@@ -16,12 +16,13 @@ function useFetchData(url: string, setData: Dispatch<SetStateAction<any>>) {
             if (session.user) {
                 const userId = session.user.id;
                 const tokenValid = await checkToken(userId);
-                if (tokenValid) setTokenValid(true);
+                if (tokenValid.token !== 'null') setTokenValid(true);
                 else router.push('/waiting');
             }
         };
-        verifyToken();
-    }, [session]);
+        if (shouldCheckToken) verifyToken();
+        else setTokenValid(true);
+    }, [session, shouldCheckToken]);
 
     useEffect(() => {
         if (!tokenValid) return;
@@ -40,7 +41,15 @@ function useFetchData(url: string, setData: Dispatch<SetStateAction<any>>) {
                 }
 
                 const data = await response.json();
-                setData(data.result.list || []);
+                // setData(data.result.list || []);
+
+                if (data.result) {
+                    if (Array.isArray(data.result.list)) {
+                        setData(data.result.list);
+                    } else {
+                        setData(data.result);
+                    }
+                }
             } catch (error) {
                 setError('Failed to fetch concerts');
             } finally {
@@ -52,5 +61,3 @@ function useFetchData(url: string, setData: Dispatch<SetStateAction<any>>) {
 
     return { loading, error, tokenValid };
 }
-
-export default useFetchData;
