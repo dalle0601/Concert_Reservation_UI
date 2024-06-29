@@ -13,25 +13,27 @@ interface useTokenVerificationType {
 export function useTokenVerification({ validURL, unValidURL, noti = false, notiSet }: useTokenVerificationType) {
     const { data: session } = useSession();
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
         const verifyToken = async () => {
-            if (session) {
-                const userId = session.user.id;
-                console.log(`Verifying token for user ${userId}`);
-                const tokenValid = await checkToken(userId);
-                console.log('Token valid:', tokenValid);
+            try {
+                if (session) {
+                    const userId = session.user.id;
+                    const tokenValid = await checkToken(userId);
 
-                if (tokenValid.token === null) {
-                    console.log('Token is invalid, redirecting to', unValidURL);
-                    router.push(unValidURL);
-                } else {
-                    console.log('Token is valid, redirecting to', validURL);
-                    router.push(validURL);
+                    if (tokenValid.token === null) {
+                        router.push(unValidURL);
+                    } else {
+                        router.push(validURL);
+                    }
                 }
+            } catch (error) {
+                setError('토큰 검증에 실패했습니다.');
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         if (noti && notiSet) {
@@ -54,5 +56,5 @@ export function useTokenVerification({ validURL, unValidURL, noti = false, notiS
         }
     }, [session, router]);
 
-    return { loading };
+    return { loading, error };
 }
