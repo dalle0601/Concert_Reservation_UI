@@ -1,31 +1,15 @@
-import { checkToken } from '@/utils/token';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
-export function useFetchData(url: string, setData: Dispatch<SetStateAction<any>>, shouldCheckToken: boolean = true) {
+export function useFetchData(url: string, setData: Dispatch<SetStateAction<any>>) {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [tokenValid, setTokenValid] = useState<boolean>(false);
     const { data: session } = useSession();
-    const router = useRouter();
 
     useEffect(() => {
         if (!session) return;
-        const verifyToken = async () => {
-            if (session.user) {
-                const userId = session.user.id;
-                const tokenValid = await checkToken(userId);
-                if (tokenValid.token !== 'null') setTokenValid(true);
-                else router.push('/waiting');
-            }
-        };
-        if (shouldCheckToken) verifyToken();
-        else setTokenValid(true);
-    }, [session, shouldCheckToken]);
 
-    useEffect(() => {
-        if (!tokenValid) return;
         const fetchConcerts = async () => {
             try {
                 const response = await fetch(url, {
@@ -41,7 +25,6 @@ export function useFetchData(url: string, setData: Dispatch<SetStateAction<any>>
                 }
 
                 const data = await response.json();
-                // setData(data.result.list || []);
 
                 if (data.result) {
                     if (Array.isArray(data.result.list)) {
@@ -56,8 +39,9 @@ export function useFetchData(url: string, setData: Dispatch<SetStateAction<any>>
                 setLoading(false);
             }
         };
-        fetchConcerts();
-    }, [tokenValid]);
 
-    return { loading, error, tokenValid };
+        fetchConcerts();
+    }, [session]);
+
+    return { loading, error };
 }
