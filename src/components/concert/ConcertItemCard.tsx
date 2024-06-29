@@ -8,7 +8,7 @@ export function ConcertItemCard({ data, onClick }: ConcertItemCardType) {
             className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg cursor-pointer"
             onClick={() => onClick(data.concert.concertId)}
         >
-            <img src={data.concert.imagePath} alt={data.concert.concertTitle} className="w-full h-48 object-cover" />
+            <img src={data.concert.imagePath} alt={data.concert.concertTitle} className="w-full h-auto object-cover" />
             <div className="p-4">
                 <h2 className="text-xl font-semibold">{data.concert.concertTitle}</h2>
                 <p className="text-gray-600">날짜: {new Date(data.concert.concertDate).toLocaleString()}</p>

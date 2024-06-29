@@ -14,7 +14,7 @@ export function SeatStatus({ seatName, isAvailable, isSelected, onClick }: SeatS
     const setSeatStyle = () => {
         if (isSelected) return 'bg-yellow-500';
         if (isAvailable) return 'bg-green-500 hover:bg-green-700';
-        if (!isAvailable) return 'bg-red-500';
+        if (!isAvailable) return 'bg-gray-500';
         return 'bg-gray-300';
     };
 
