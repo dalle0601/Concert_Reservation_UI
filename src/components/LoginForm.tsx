@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
 
 interface LoginFormProps {
     handleLogin: (userId: string) => void;
@@ -9,7 +8,6 @@ interface LoginFormProps {
 
 export function LoginForm({ handleLogin }: LoginFormProps) {
     const [userId, setUserId] = useState('');
-    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

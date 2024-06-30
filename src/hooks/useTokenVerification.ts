@@ -5,7 +5,7 @@ import { checkToken } from '@/utils/token';
 
 interface useTokenVerificationType {
     validURL: string;
-    unValidURL: string;
+    unValidURL?: string;
     noti?: boolean;
     notiSet?: React.Dispatch<React.SetStateAction<String>>;
 }
@@ -24,7 +24,7 @@ export function useTokenVerification({ validURL, unValidURL, noti = false, notiS
                     const tokenValid = await checkToken(userId);
 
                     if (tokenValid.token === null) {
-                        router.push(unValidURL);
+                        if (unValidURL) router.push(unValidURL);
                     } else {
                         router.push(validURL);
                     }
@@ -37,20 +37,27 @@ export function useTokenVerification({ validURL, unValidURL, noti = false, notiS
         };
 
         if (noti && notiSet) {
-            const interval = setInterval(async () => {
-                if (session) {
-                    const userId = session.user.id;
-                    const tokenValid = await checkToken(userId);
-                    notiSet(tokenValid.queuePosition);
-                    if (tokenValid.token !== null) {
-                        clearInterval(interval);
-                        await verifyToken();
-                    }
-                    setLoading(false);
-                }
-            }, 3000);
+            const worker = new Worker('/useTokenVerification.worker.js');
 
-            return () => clearInterval(interval);
+            worker.onmessage = async (e) => {
+                const tokenValid = e.data;
+                notiSet(tokenValid.queuePosition);
+
+                if (tokenValid.token !== null) {
+                    worker.terminate();
+                    await verifyToken();
+                }
+
+                setLoading(false);
+            };
+
+            if (session) {
+                worker.postMessage({ userId: session.user.id, interval: 3000 });
+            }
+
+            return () => {
+                worker.terminate();
+            };
         } else {
             verifyToken();
         }

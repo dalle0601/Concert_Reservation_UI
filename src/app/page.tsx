@@ -8,10 +8,9 @@ export default function HomePage() {
         signIn('credentials', { userId, callbackUrl: '/concert' });
     };
 
-    useTokenVerification({
-        validURL: '/concert',
-        unValidURL: '/wait',
-    });
+    // useTokenVerification({
+    //     validURL: '/concert',
+    // });
 
     return (
         <div className="flex flex-col justify-start items-center bg-gray-100 min-h-screen w-full">
