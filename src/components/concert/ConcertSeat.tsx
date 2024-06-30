@@ -6,6 +6,7 @@ import { ConditionalWrap } from '../common/ConditionalWrap';
 import { SeatStatus } from '../common/SeatStatus';
 import { useFetchData } from '../../hooks/useFetchData';
 import { SectionTitle } from '../common/SectionTitle';
+import useStore from '../../app/store/useStore';
 
 interface Seat {
     seat_id: number;
@@ -31,7 +32,9 @@ export function ConcertSeat({ concertId }: ConcertSeatProps) {
     const router = useRouter();
     const { data: session } = useSession();
     const { loading, error } = useFetchData(`http://localhost:8080/concert/${concertId}/seat`, setSeats);
+    const { selectedConcert } = useStore();
 
+    console.log(selectedConcert);
     const handleFindSeat = (seatName: string) => {
         return seats.find((s) => s.seat_number === seatName);
     };
@@ -91,6 +94,21 @@ export function ConcertSeat({ concertId }: ConcertSeatProps) {
             <SectionTitle title="좌석 확인" />
             <div className="flex flex-1 w-full">
                 <div className="flex-1 flex justify-center items-start p-4">
+                    <div className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg">
+                        <img
+                            src={selectedConcert?.concertImage}
+                            alt={selectedConcert!.concertImage}
+                            className="w-full h-auto object-cover"
+                        />
+                        <div className="p-4">
+                            <h2 className="text-xl font-semibold">{selectedConcert?.concertTitle}</h2>
+                            <p className="text-gray-600">
+                                날짜: {new Date(selectedConcert!.concertDate).toLocaleString()}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex-1 flex flex-col justify-start items-center p-4 h-full">
                     <ConditionalWrap isLoading={loading} isError={error} data={[0]}>
                         <div className="grid grid-cols-10 gap-4 w-full h-3/4">
                             {Array.from({ length: 50 }, (_, index) => (
@@ -104,8 +122,6 @@ export function ConcertSeat({ concertId }: ConcertSeatProps) {
                             ))}
                         </div>
                     </ConditionalWrap>
-                </div>
-                <div className="flex-1 flex flex-col justify-start items-center p-4 h-full">
                     {selectedSeat ? (
                         <>
                             <p>선택된 좌석: {selectedSeat.seat_number}</p>

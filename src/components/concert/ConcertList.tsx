@@ -5,6 +5,7 @@ import { ConditionalWrap } from '../common/ConditionalWrap';
 import { ConcertItemCard } from './ConcertItemCard';
 import { useFetchData } from '../../hooks/useFetchData';
 import { useTokenVerification } from '@/hooks/useTokenVerification';
+import useStore from '../../app/store/useStore';
 
 interface ConcertItem {
     concert: Concert;
@@ -12,7 +13,6 @@ interface ConcertItem {
 }
 
 interface Concert {
-    imagePath?: string;
     concertId: number;
     concertTitle: string;
     concertDate: string;
@@ -23,6 +23,7 @@ interface Concert {
 export function ConcertList() {
     const [concerts, setConcerts] = useState<ConcertItem[]>([]);
     const router = useRouter();
+    const { setSelectedConcert } = useStore();
 
     useTokenVerification({
         validURL: '/concert',
@@ -31,8 +32,9 @@ export function ConcertList() {
 
     const { loading, error } = useFetchData('http://localhost:8080/concert/date', setConcerts);
 
-    const handleSelectConcert = (concertId: number) => {
-        router.push(`concert/${concertId}`);
+    const handleSelectConcert = (concert: Concert) => {
+        setSelectedConcert(concert);
+        router.push(`concert/${concert.concertId}`);
     };
 
     return (
@@ -44,7 +46,7 @@ export function ConcertList() {
                             <ConcertItemCard
                                 key={concertItem.concert.concertId}
                                 data={concertItem}
-                                onClick={handleSelectConcert}
+                                onClick={() => handleSelectConcert(concertItem.concert)}
                             />
                         ))}
                 </div>
