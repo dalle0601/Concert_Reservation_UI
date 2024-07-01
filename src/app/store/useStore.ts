@@ -5,7 +5,7 @@ interface Concert {
     concertTitle: string;
     concertDate: string;
     createdAt: string;
-    concertImage: string;
+    imagePath: string;
 }
 
 interface StoreState {

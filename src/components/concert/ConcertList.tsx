@@ -17,7 +17,7 @@ interface Concert {
     concertTitle: string;
     concertDate: string;
     createdAt: string;
-    concertImage: string;
+    imagePath: string;
 }
 
 export function ConcertList() {
@@ -33,6 +33,7 @@ export function ConcertList() {
     const { loading, error } = useFetchData('http://localhost:8080/concert/date', setConcerts);
 
     const handleSelectConcert = (concert: Concert) => {
+        console.log(concert);
         setSelectedConcert(concert);
         router.push(`concert/${concert.concertId}`);
     };

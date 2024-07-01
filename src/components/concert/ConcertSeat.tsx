@@ -5,8 +5,6 @@ import React, { useState } from 'react';
 import { ConditionalWrap } from '../common/ConditionalWrap';
 import { SeatStatus } from '../common/SeatStatus';
 import { useFetchData } from '../../hooks/useFetchData';
-import { SectionTitle } from '../common/SectionTitle';
-import useStore from '../../app/store/useStore';
 
 interface Seat {
     seat_id: number;
@@ -32,9 +30,7 @@ export function ConcertSeat({ concertId }: ConcertSeatProps) {
     const router = useRouter();
     const { data: session } = useSession();
     const { loading, error } = useFetchData(`http://localhost:8080/concert/${concertId}/seat`, setSeats);
-    const { selectedConcert } = useStore();
 
-    console.log(selectedConcert);
     const handleFindSeat = (seatName: string) => {
         return seats.find((s) => s.seat_number === seatName);
     };
@@ -90,53 +86,35 @@ export function ConcertSeat({ concertId }: ConcertSeatProps) {
     };
 
     return (
-        <div className="flex flex-col justify-start items-center min-h-screen w-full">
-            <SectionTitle title="좌석 확인" />
-            <div className="flex flex-1 w-full">
-                <div className="flex-1 flex justify-center items-start p-4">
-                    <div className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg">
-                        <img
-                            src={selectedConcert?.concertImage}
-                            alt={selectedConcert!.concertImage}
-                            className="w-full h-auto object-cover"
+        <div className="flex-1 flex flex-col justify-start items-center p-4 h-full">
+            <ConditionalWrap isLoading={loading} isError={error} data={[0]}>
+                <div className="grid grid-cols-10 gap-4 w-full h-3/4">
+                    {Array.from({ length: 50 }, (_, index) => (
+                        <SeatStatus
+                            key={index}
+                            seatName={setSeatName(index)}
+                            isAvailable={setIsAvaliable(index)}
+                            isSelected={selectedSeat?.seat_number === setSeatName(index)}
+                            onClick={handleSelectSeat}
                         />
-                        <div className="p-4">
-                            <h2 className="text-xl font-semibold">{selectedConcert?.concertTitle}</h2>
-                            <p className="text-gray-600">
-                                날짜: {new Date(selectedConcert!.concertDate).toLocaleString()}
-                            </p>
-                        </div>
-                    </div>
+                    ))}
                 </div>
-                <div className="flex-1 flex flex-col justify-start items-center p-4 h-full">
-                    <ConditionalWrap isLoading={loading} isError={error} data={[0]}>
-                        <div className="grid grid-cols-10 gap-4 w-full h-3/4">
-                            {Array.from({ length: 50 }, (_, index) => (
-                                <SeatStatus
-                                    key={index}
-                                    seatName={setSeatName(index)}
-                                    isAvailable={setIsAvaliable(index)}
-                                    isSelected={selectedSeat?.seat_number === setSeatName(index)}
-                                    onClick={handleSelectSeat}
-                                />
-                            ))}
-                        </div>
-                    </ConditionalWrap>
-                    {selectedSeat ? (
-                        <>
-                            <p>선택된 좌석: {selectedSeat.seat_number}</p>
-                            <p>가격: {selectedSeat.cost}</p>
-                            <button
-                                className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
-                                onClick={handleReserveSeat}
-                            >
-                                선택좌석 예약하기
-                            </button>
-                        </>
-                    ) : (
-                        <p>좌석을 선택하세요.</p>
-                    )}
-                </div>
+            </ConditionalWrap>
+            <div className="pt-20">
+                {selectedSeat ? (
+                    <>
+                        <p>선택된 좌석: {selectedSeat.seat_number}</p>
+                        <p>가격: {selectedSeat.cost}</p>
+                        <button
+                            className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                            onClick={handleReserveSeat}
+                        >
+                            선택좌석 예약하기
+                        </button>
+                    </>
+                ) : (
+                    <p>좌석을 선택하세요.</p>
+                )}
             </div>
         </div>
     );
