@@ -20,8 +20,7 @@ export function ReservationList() {
 
     const { loading, error } = useFetchData(
         `http://localhost:8080/user/${session?.user?.id}/reservations`,
-        setReservations,
-        false
+        setReservations
     );
 
     const handlePayment = async (reservationId: number) => {
@@ -46,7 +45,6 @@ export function ReservationList() {
             }
 
             const result = await response.json();
-            console.log('Payment successful', result);
             if (result.message === '포인트가 부족합니다.') {
                 alert('포인트가 부족합니다.');
             } else {

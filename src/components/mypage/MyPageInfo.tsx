@@ -18,7 +18,7 @@ const MyPageInfo = () => {
     const { data: session } = useSession();
     const router = useRouter();
 
-    const { loading, error, tokenValid } = useFetchData(`http://localhost:8080/point/${session?.user.id}`, setUser);
+    const { loading, error } = useFetchData(`http://localhost:8080/point/${session?.user.id}`, setUser);
 
     const handleRecharge = (newPoint: number) => {
         setUser((prevUser) => prevUser && { ...prevUser, point: newPoint });

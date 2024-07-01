@@ -1,4 +1,3 @@
-// src/pages/api/auth/[...nextauth].ts
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
@@ -7,36 +6,30 @@ export default NextAuth({
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
-                userId: { label: 'UserId', type: 'text' },
+                userId: { label: 'User ID', type: 'text' },
             },
             authorize: async (credentials) => {
-                if (!credentials?.userId) {
-                    return null;
+                if (credentials?.userId) {
+                    return { id: credentials.userId };
                 }
-                const user = { id: credentials.userId };
-                if (user) {
-                    return user;
-                } else {
-                    return null;
-                }
+                return null;
             },
         }),
     ],
-    pages: {
-        signIn: '/',
+    session: {
+        strategy: 'jwt',
     },
     callbacks: {
-        async session({ session, token }) {
-            if (session?.user) {
-                session.user.id = token.sub;
-            }
-            return session;
-        },
         async jwt({ token, user }) {
             if (user) {
-                token.sub = user.id;
+                token.id = user.id;
             }
             return token;
         },
+        async session({ session, token }) {
+            session.user.id = token.id;
+            return session;
+        },
     },
+    secret: process.env.NEXTAUTH_SECRET,
 });

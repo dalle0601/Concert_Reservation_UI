@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { ConditionalWrap } from '../common/ConditionalWrap';
 import { ConcertItemCard } from './ConcertItemCard';
 import { useFetchData } from '../../hooks/useFetchData';
-import { useTokenVerification } from '@/hooks/useTokenVerification';
 import useStore from '../../app/store/useStore';
 
 interface ConcertItem {
@@ -25,15 +24,9 @@ export function ConcertList() {
     const router = useRouter();
     const { setSelectedConcert } = useStore();
 
-    useTokenVerification({
-        validURL: '/concert',
-        unValidURL: '/wait',
-    });
-
     const { loading, error } = useFetchData('http://localhost:8080/concert/date', setConcerts);
 
     const handleSelectConcert = (concert: Concert) => {
-        console.log(concert);
         setSelectedConcert(concert);
         router.push(`concert/${concert.concertId}`);
     };
