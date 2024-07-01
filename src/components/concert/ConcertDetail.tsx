@@ -1,5 +1,5 @@
 import React from 'react';
-import useStore from '../../app/store/useStore';
+import useStore from '../store/useStore';
 
 export function ConcertDetail() {
     const { selectedConcert } = useStore();

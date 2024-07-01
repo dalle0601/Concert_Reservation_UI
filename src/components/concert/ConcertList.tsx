@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ConditionalWrap } from '../common/ConditionalWrap';
 import { ConcertItemCard } from './ConcertItemCard';
 import { useFetchData } from '../../hooks/useFetchData';
-import useStore from '../../app/store/useStore';
+import useStore from '../store/useStore';
 
 interface ConcertItem {
     concert: Concert;
