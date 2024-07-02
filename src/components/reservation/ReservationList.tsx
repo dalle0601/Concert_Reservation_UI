@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ConditionalWrap } from '../common/ConditionalWrap';
 import { useFetchData } from '../../hooks/useFetchData';
 import { useSession } from 'next-auth/react';
@@ -22,6 +22,23 @@ export function ReservationList() {
         `http://localhost:8080/user/${session?.user?.id}/reservations`,
         setReservations
     );
+
+    useEffect(() => {
+        const worker = new Worker('/useReservationUpdate.worker.js');
+
+        worker.onmessage = (e) => {
+            const reservationData = e.data;
+            setReservations(reservationData.result.list);
+        };
+
+        if (session) {
+            worker.postMessage({ userId: session.user.id, interval: 3000 });
+        }
+
+        return () => {
+            worker.terminate();
+        };
+    }, [session]);
 
     const handlePayment = async (reservationId: number) => {
         const userId = session?.user?.id || '';
