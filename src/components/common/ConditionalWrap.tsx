@@ -9,7 +9,7 @@ interface ConditionalWrapType {
 export function ConditionalWrap({ isLoading, isError, data, children }: ConditionalWrapType) {
     if (isLoading) return <BeatLoader size={20} color="#6366f1" />;
     if (!!isError) return <p>관리자에게 문의하세요...</p>;
-    if (!data?.length) return <div>no data</div>;
+    if (!data?.length) return <div>현재 데이터가 없습니다...</div>;
 
     return <>{children} </>;
 }

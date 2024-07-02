@@ -104,7 +104,7 @@ export function ConcertSeat({ concertId }: ConcertSeatProps) {
                 {selectedSeat ? (
                     <>
                         <p>선택된 좌석: {selectedSeat.seat_number}</p>
-                        <p>가격: {selectedSeat.cost}</p>
+                        <p>가격: {selectedSeat.cost.toLocaleString()}</p>
                         <button
                             className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
                             onClick={handleReserveSeat}

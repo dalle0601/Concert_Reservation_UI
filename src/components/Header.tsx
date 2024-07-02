@@ -35,7 +35,7 @@ export function Header() {
                             className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded"
                             onClick={handleReservationClick}
                         >
-                            예약하기
+                            예약확인
                         </button>
                         <button
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
