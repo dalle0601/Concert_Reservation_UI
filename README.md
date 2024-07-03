@@ -78,9 +78,9 @@ Concert Reservation UI 프로젝트는 프론트엔드 부분으로, 백엔드�
 -   [MyPageInfo.tsx](https://github.com/dalle0601/Concert_Reservation_UI/blob/main/src/components/mypage/MyPageInfo.tsx)
 -   [PointChargeModal.tsx](https://github.com/dalle0601/Concert_Reservation_UI/blob/main/src/components/mypage/PointChargeModal.tsx)
 
-<img width="300" alt="5 마이페이지" src="https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/896b7524-b291-48b1-a916-8820ec9ba0ef">
-<img width="300" alt="5 포인트 충전" src="https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/e1e4bd6d-aa48-49f5-b217-b4858807a6c9">
-<img width="300" alt="5 포인트 충전 완료" src="https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/545d3f07-1f2b-4cdb-a591-98a59dbec252">
+<img width="200" alt="5 마이페이지" src="https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/896b7524-b291-48b1-a916-8820ec9ba0ef">
+<img width="200" alt="5 포인트 충전" src="https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/e1e4bd6d-aa48-49f5-b217-b4858807a6c9">
+<img width="200" alt="5 포인트 충전 완료" src="https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/545d3f07-1f2b-4cdb-a591-98a59dbec252">
 
 ### 대기열 시스템
 
@@ -89,8 +89,8 @@ Concert Reservation UI 프로젝트는 프론트엔드 부분으로, 백엔드�
 -   [useTokenVerification.worker.js](https://github.com/dalle0601/Concert_Reservation_UI/blob/main/public/useTokenVerification.worker.js)
 -   [wait/page.tsx](https://github.com/dalle0601/Concert_Reservation_UI/blob/main/src/app/wait/page.tsx)
 
-![6 대기열 1](https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/65385f99-a246-451c-8e44-ce3c47049b17)
-![6 대기열 2](https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/efc87387-68fc-4862-9f6f-1f778fce4860)
+<img width="500" alt="6 대기열 1" src="https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/65385f99-a246-451c-8e44-ce3c47049b17">
+<img width="500" alt="6 대기열 2" src="https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/efc87387-68fc-4862-9f6f-1f778fce4860">
 
 ## 결론
 
