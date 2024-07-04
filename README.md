@@ -91,7 +91,3 @@ Concert Reservation UI 프로젝트는 프론트엔드 부분으로, 백엔드�
 
 <img width="500" alt="6 대기열 1" src="https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/65385f99-a246-451c-8e44-ce3c47049b17">
 <img width="500" alt="6 대기열 2" src="https://github.com/dalle0601/Concert_Reservation_UI/assets/33375877/efc87387-68fc-4862-9f6f-1f778fce4860">
-
-## 결론
-
-이 프로젝트는 사용자가 콘서트를 예약하고 관리할 수 있는 완전한 솔루션을 제공합니다. 최신 웹 기술과 견고한 백엔드 시스템을 통해 높은 성능과 사용성을 제공합니다.
