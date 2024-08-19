@@ -41,10 +41,10 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
     matcher: [
-        '/',
-        '/mypage/:path*',
-        '/concert/:path*',
-        '/wait/:path*',
+        // '/',
+        // '/mypage/:path*',
+        // '/concert/:path*',
+        // '/wait/:path*',
         // 검사할 경로 추가
     ],
 };

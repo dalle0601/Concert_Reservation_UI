@@ -1,16 +1,16 @@
 'use client';
 import { LoginForm } from '@/components/Login/LoginForm';
+import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useTokenVerification } from '@/hooks/useTokenVerification';
 
 export default function HomePage() {
-    const handleLogin = async (userId: string) => {
-        signIn('credentials', { userId, callbackUrl: '/concert' });
-    };
+    const router = useRouter();
 
-    // useTokenVerification({
-    //     validURL: '/concert',
-    // });
+    const handleLogin = async (userId: string) => {
+        // const result = await signIn('credentials', { userId, callbackUrl: '/concert' });
+        router.push('/concert');
+    };
 
     return (
         <div className="flex flex-col justify-start items-center bg-gray-100 min-h-screen w-full">

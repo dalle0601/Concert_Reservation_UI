@@ -3,6 +3,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import axiosInstance from '@/utils/axiosInterceptor';
+import useStore from '../store/useStore';
 
 interface LoginFormProps {
     handleLogin: (userId: string) => void;
@@ -11,6 +12,7 @@ interface LoginFormProps {
 export function LoginForm({ handleLogin }: LoginFormProps) {
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
+    const setUserIdStore = useStore((state) => state.setUserId);
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -23,22 +25,26 @@ export function LoginForm({ handleLogin }: LoginFormProps) {
         try {
             const response = await axiosInstance.post('/login', loginData);
 
-            console.log(response.headers);
-            debugger;
-            // 로그인 성공 시 JWT 토큰을 로컬 스토리지에 저장
-            const token = response.data.accessToken;
-            localStorage.setItem('jwtToken', token);
+            if (response && response.data && response.data.accessToken) {
+                // 로그인 성공 시 JWT 토큰을 로컬 스토리지에 저장
+                const token = response.data.accessToken;
+                localStorage.setItem('jwtToken', token);
 
-            await axios.post(
-                'http://localhost:8080/user/token',
-                { userId },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            handleLogin(userId);
+                await axios.post(
+                    'http://localhost:8080/user/token',
+                    { userId },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            access: token,
+                        },
+                    }
+                );
+                setUserIdStore(userId);
+                handleLogin(userId);
+            } else {
+                alert('로그인에 실패했습니다.');
+            }
         } catch (e: any) {
             console.error(e);
         }
