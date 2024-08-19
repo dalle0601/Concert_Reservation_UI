@@ -24,10 +24,21 @@ export function LoginForm({ handleLogin }: LoginFormProps) {
             const response = await axiosInstance.post('/login', loginData);
 
             console.log(response.headers);
-
             debugger;
-            // await axios.post('http://localhost:8080/user/token', { userId });
-            // handleLogin(userId);
+            // 로그인 성공 시 JWT 토큰을 로컬 스토리지에 저장
+            const token = response.data.accessToken;
+            localStorage.setItem('jwtToken', token);
+
+            await axios.post(
+                'http://localhost:8080/user/token',
+                { userId },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            handleLogin(userId);
         } catch (e: any) {
             console.error(e);
         }
