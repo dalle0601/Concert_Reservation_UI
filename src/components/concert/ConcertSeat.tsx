@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import { ConditionalWrap } from '../common/ConditionalWrap';
 import { SeatStatus } from '../common/SeatStatus';
 import { useFetchData } from '../../hooks/useFetchData';
+import axios from 'axios';
+import useStore from '../store/useStore';
 
 interface Seat {
     seat_id: number;
@@ -26,6 +28,7 @@ interface ConcertSeatProps {
 
 export function ConcertSeat({ concertId }: ConcertSeatProps) {
     const [seats, setSeats] = useState<Seat[]>([]);
+    const userId = useStore((state) => state.userId);
     const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
     const router = useRouter();
     const { data: session } = useSession();
@@ -43,7 +46,7 @@ export function ConcertSeat({ concertId }: ConcertSeatProps) {
     const handleReserveSeat = async () => {
         if (!selectedSeat) return;
 
-        const userId = session?.user?.id || '';
+        // const userId = session?.user?.id || '';
         const reservationData = {
             concertId: concertId,
             seatId: selectedSeat.seat_id,
@@ -52,19 +55,21 @@ export function ConcertSeat({ concertId }: ConcertSeatProps) {
         };
 
         try {
-            const response = await fetch('http://localhost:8080/reservation', {
-                method: 'POST',
+            const token = localStorage.getItem('jwtToken');
+            const response = await axios.post('http://localhost:8080/reservation', reservationData, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                    access: token,
                 },
-                body: JSON.stringify(reservationData),
             });
 
-            if (!response.ok) {
+            if (response.data.code !== 'SUCCESS') {
                 throw new Error('Failed to reserve seat');
             }
 
-            const result = await response.json();
+            // const result = await response.json();
+
             router.push('/concert/reservation');
         } catch (error) {
             console.error('Error:', error);

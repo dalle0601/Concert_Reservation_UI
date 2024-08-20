@@ -19,7 +19,10 @@ const useStore = create<StoreState>((set) => ({
     selectedConcert: null,
     setSelectedConcert: (concert) => set({ selectedConcert: concert }),
     userId: null,
-    setUserId: (id) => set({ userId: id }),
+    setUserId: (id) => {
+        set({ userId: id });
+        localStorage.setItem('userId', JSON.stringify(id));
+    },
 }));
 
 export default useStore;

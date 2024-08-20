@@ -25,25 +25,36 @@ export function LoginForm({ handleLogin }: LoginFormProps) {
         try {
             const response = await axiosInstance.post('/login', loginData);
 
-            if (response && response.data && response.data.accessToken) {
+            if (response && response.data) {
                 // 로그인 성공 시 JWT 토큰을 로컬 스토리지에 저장
                 const token = response.data.accessToken;
+                const refreshToken = response.data.refreshToken; // 리프레시 토큰을 응답에서 가져옵니다.
+
                 localStorage.setItem('jwtToken', token);
 
-                await axios.post(
-                    'http://localhost:8080/user/token',
-                    { userId },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            access: token,
-                        },
+                // 리프레시 토큰을 쿠키에 저장
+                document.cookie = `refresh=${refreshToken}; path=/;`; // HttpOnly 속성 추가
+
+                if (token) {
+                    try {
+                        await axios.post(
+                            'http://localhost:8080/user/token',
+                            { userId },
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                    access: token,
+                                },
+                            }
+                        );
+                    } catch (e: any) {
+                        console.log('Error while fetching user token:', e);
                     }
-                );
-                setUserIdStore(userId);
-                handleLogin(userId);
-            } else {
-                alert('로그인에 실패했습니다.');
+                    setUserIdStore(userId);
+                    handleLogin(userId);
+                } else {
+                    alert('로그인에 실패했습니다.');
+                }
             }
         } catch (e: any) {
             console.error(e);

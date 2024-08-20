@@ -1,5 +1,5 @@
 import { Header } from '@/components/Header';
-import { SessionProvider } from '@/components/SessionProvider';
+// import { SessionProvider } from '@/components/SessionProvider';
 import type { Metadata } from 'next';
 import './globals.css';
 import { ReactNode } from 'react';
@@ -17,12 +17,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="kr">
             <body className="bg-gray-100">
-                <SessionProvider>
-                    <Header />
-                    <main className="flex flex-col items-center justify-start min-h-screen pt-[70px] w-full">
-                        {children}
-                    </main>
-                </SessionProvider>
+                {/* <SessionProvider> */}
+                <Header />
+                <main className="flex flex-col items-center justify-start min-h-screen pt-[70px] w-full">
+                    {children}
+                </main>
+                {/* </SessionProvider> */}
             </body>
         </html>
     );

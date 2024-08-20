@@ -1,11 +1,12 @@
 'use client';
-import { signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import React from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 export function Header() {
-    const { data: session } = useSession();
     const router = useRouter();
+    const pathname = usePathname();
+    const isRootPath = pathname === '/';
 
     const handleMyPageClick = () => {
         router.push('/mypage');
@@ -29,7 +30,7 @@ export function Header() {
                 <h1 className="text-2xl font-bold cursor-pointer" onClick={handleTitleClick}>
                     콘서트
                 </h1>
-                {session && (
+                {!isRootPath && (
                     <div className="space-x-4 flex items-center">
                         <button
                             className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded"

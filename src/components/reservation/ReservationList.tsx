@@ -4,6 +4,7 @@ import { ConditionalWrap } from '../common/ConditionalWrap';
 import { useFetchData } from '../../hooks/useFetchData';
 import { useSession } from 'next-auth/react';
 import { ReservationCard } from './ReservationCard';
+import useStore from '../store/useStore';
 
 interface Reservation {
     reservationId: number;
@@ -16,12 +17,11 @@ interface Reservation {
 
 export function ReservationList() {
     const [reservations, setReservations] = useState<Reservation[]>([]);
-    const { data: session } = useSession();
+    const userId = useStore((state) => state.userId);
 
-    const { loading, error } = useFetchData(
-        `http://localhost:8080/user/${session?.user?.id}/reservations`,
-        setReservations
-    );
+    // const { data: session } = useSession();
+
+    const { loading, error } = useFetchData(`http://localhost:8080/user/${userId}/reservations`, setReservations);
 
     useEffect(() => {
         const worker = new Worker('/useReservationUpdate.worker.js');
@@ -31,21 +31,21 @@ export function ReservationList() {
             setReservations(reservationData.result.list);
         };
 
-        if (session) {
-            worker.postMessage({ userId: session.user.id, interval: 3000 });
+        if (userId) {
+            worker.postMessage({ userId: userId, interval: 3000, token: localStorage.getItem('jwtToken') });
         }
 
         return () => {
             worker.terminate();
         };
-    }, [session]);
+    }, []);
 
     const handlePayment = async (reservationId: number) => {
-        const userId = session?.user?.id || '';
+        // const userId = session?.user?.id || '';
 
         const reservationData = {
             reservationId: reservationId,
-            userId: parseInt(userId, 10),
+            userId: userId,
         };
 
         try {
