@@ -2,11 +2,12 @@
 import React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
+import axios from 'axios';
 
 export function Header() {
     const router = useRouter();
     const pathname = usePathname();
-    const isRootPath = pathname === '/';
+    const isRootPath = pathname === '/' || pathname === '/join';
 
     const handleMyPageClick = () => {
         router.push('/mypage');
@@ -20,8 +21,22 @@ export function Header() {
         router.push('/concert');
     };
 
-    const handleLogout = () => {
-        signOut({ callbackUrl: '/' });
+    const handleLogout = async () => {
+        // signOut({ callbackUrl: '/' });
+        try {
+            const response = await axios.post('http://localhost:8080/logout', {}, { withCredentials: true });
+            if (response.status === 200) {
+                // 로그아웃 성공 처리
+                console.log('로그아웃 성공');
+                router.push('/');
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.error('로그아웃 실패:', error.response?.data);
+            } else {
+                console.error('로그아웃 실패:', error);
+            }
+        }
     };
 
     return (

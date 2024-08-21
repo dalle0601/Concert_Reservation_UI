@@ -34,8 +34,6 @@ export function useFetchData(url: string, setData: Dispatch<SetStateAction<any>>
                 }
             } catch (error) {
                 const axiosError = error as AxiosError;
-                console.log('ggg');
-                debugger;
                 if (axiosError.response?.status === 403 && !retry) {
                     // 엑세스 토큰이 만료된 경우 리프레시 토큰 요청
                     try {

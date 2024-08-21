@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { PointChargeModal } from './PointChargeModal';
 import { useFetchData } from '@/hooks/useFetchData';
+import useStore from '../store/useStore';
 
 interface User {
     message: string;
@@ -15,10 +16,11 @@ interface User {
 const MyPageInfo = () => {
     const [user, setUser] = useState<User | null>(null);
     const [showModal, setShowModal] = useState<boolean>(false);
-    const { data: session } = useSession();
+    // const { data: session } = useSession();
     const router = useRouter();
+    const userId = useStore((state) => state.userId);
 
-    const { loading, error } = useFetchData(`http://localhost:8080/point/${session?.user.id}`, setUser);
+    const { loading, error } = useFetchData(`http://localhost:8080/point/${userId}`, setUser);
 
     const handleRecharge = (newPoint: number) => {
         setUser((prevUser) => prevUser && { ...prevUser, point: newPoint });

@@ -31,7 +31,7 @@ export function ConcertSeat({ concertId }: ConcertSeatProps) {
     const userId = useStore((state) => state.userId);
     const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
     const router = useRouter();
-    const { data: session } = useSession();
+    // const { data: session } = useSession();
     const { loading, error } = useFetchData(`http://localhost:8080/concert/${concertId}/seat`, setSeats);
 
     const handleFindSeat = (seatName: string) => {

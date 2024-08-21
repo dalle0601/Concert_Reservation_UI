@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 
 interface PointChargeModalProps {
@@ -16,21 +17,26 @@ export function PointChargeModal({ userId, onClose, onRecharge }: PointChargeMod
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:8080/point/charge', {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userId: parseInt(userId), point }),
-            });
+            const token = localStorage.getItem('jwtToken');
 
-            if (!response.ok) {
+            const response = await axios.patch(
+                'http://localhost:8080/point/charge',
+                { userId: userId, point },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                        access: token,
+                    },
+                }
+            );
+            if (response.data.code !== 'SUCCESS') {
                 throw new Error('Failed to recharge points');
             }
 
-            const result = await response.json();
-            if (result.result.message === '포인트 충전 성공') {
-                onRecharge(result.result.pointHistory.point);
+            // const result = await response.json();
+            if (response.data.result.message === '포인트 충전 성공') {
+                onRecharge(response.data.result.pointHistory.point);
             } else {
                 alert('포인트 충전에 실패했습니다.');
             }

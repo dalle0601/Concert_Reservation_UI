@@ -5,6 +5,7 @@ import { useFetchData } from '../../hooks/useFetchData';
 import { useSession } from 'next-auth/react';
 import { ReservationCard } from './ReservationCard';
 import useStore from '../store/useStore';
+import axios from 'axios';
 
 interface Reservation {
     reservationId: number;
@@ -38,7 +39,7 @@ export function ReservationList() {
         return () => {
             worker.terminate();
         };
-    }, []);
+    }, [userId]);
 
     const handlePayment = async (reservationId: number) => {
         // const userId = session?.user?.id || '';
@@ -49,20 +50,26 @@ export function ReservationList() {
         };
 
         try {
-            const response = await fetch(`http://localhost:8080/point/payment`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(reservationData),
-            });
+            const token = localStorage.getItem('jwtToken');
 
-            if (!response.ok) {
+            const response = await axios.post(
+                `http://localhost:8080/point/payment`,
+                { reservationData },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                        access: token,
+                    },
+                }
+            );
+
+            if (response.data.code !== 'SUCCESS') {
                 throw new Error('Failed to process payment');
             }
 
-            const result = await response.json();
-            if (result.message === '포인트가 부족합니다.') {
+            // const result = await response.json();
+            if (response.data.message === '포인트가 부족합니다.') {
                 alert('포인트가 부족합니다.');
             } else {
                 // 결제 성공 후 예약 상태를 업데이트

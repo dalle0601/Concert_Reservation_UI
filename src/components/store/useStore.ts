@@ -15,13 +15,32 @@ interface StoreState {
     setUserId: (id: string | null) => void;
 }
 
+const loadState = () => {
+    const savedUserId = localStorage.getItem('userId');
+    const savedSelectedConcert = localStorage.getItem('selectedConcert');
+
+    return {
+        userId: savedUserId ? JSON.parse(savedUserId) : null,
+        selectedConcert: savedSelectedConcert ? JSON.parse(savedSelectedConcert) : null,
+    };
+};
+
+const saveState = (userId: string | null, selectedConcert: Concert | null) => {
+    localStorage.setItem('userId', JSON.stringify(userId));
+    localStorage.setItem('selectedConcert', JSON.stringify(selectedConcert));
+};
+
+const initialState = loadState();
+
 const useStore = create<StoreState>((set) => ({
-    selectedConcert: null,
-    setSelectedConcert: (concert) => set({ selectedConcert: concert }),
-    userId: null,
+    ...initialState,
+    setSelectedConcert: (concert) => {
+        set({ selectedConcert: concert });
+        localStorage.setItem('selectedConcert', JSON.stringify(concert));
+    },
     setUserId: (id) => {
         set({ userId: id });
-        localStorage.setItem('userId', JSON.stringify(id));
+        saveState(id, null);
     },
 }));
 

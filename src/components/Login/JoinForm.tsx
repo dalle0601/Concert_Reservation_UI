@@ -24,7 +24,6 @@ export function JoinForm() {
             });
             // handleLogin(userId);
             const result = await response.json();
-            console.log(result);
             if (result.result === '이미 존재하는 계정임') {
                 alert('이미 존재하는 ID 입니다.');
             } else {
