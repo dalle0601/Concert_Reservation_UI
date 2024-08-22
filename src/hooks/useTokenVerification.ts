@@ -2,33 +2,36 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { checkToken } from '@/utils/token';
+import useStore from '@/components/store/useStore';
 
 interface useTokenVerificationType {
     validURL: string;
     unValidURL?: string;
     noti?: boolean;
-    notiSet?: React.Dispatch<React.SetStateAction<String>>;
+    notiSet?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function useTokenVerification({ validURL, unValidURL, noti = false, notiSet }: useTokenVerificationType) {
-    const { data: session } = useSession();
+    // const { data: session } = useSession();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
+    const userId = useStore((state) => state.userId);
 
     useEffect(() => {
         const verifyToken = async () => {
             try {
-                if (session) {
-                    const userId = session.user.id;
-                    const tokenValid = await checkToken(userId);
+                // if (session) {
+                //     const userId = session.user.id;
+                const jwtToken = localStorage.getItem('jwtToken') || 'null';
+                const tokenValid = await checkToken(userId, jwtToken);
 
-                    if (tokenValid.token === null) {
-                        if (unValidURL) router.push(unValidURL);
-                    } else {
-                        router.push(validURL);
-                    }
+                if (tokenValid.token === null) {
+                    if (unValidURL) router.push(unValidURL);
+                } else {
+                    router.push(validURL);
                 }
+                // }
             } catch (error) {
                 setError('토큰 검증에 실패했습니다.');
             } finally {
@@ -51,9 +54,9 @@ export function useTokenVerification({ validURL, unValidURL, noti = false, notiS
                 setLoading(false);
             };
 
-            if (session) {
-                worker.postMessage({ userId: session.user.id, interval: 3000 });
-            }
+            // if (session) {
+            worker.postMessage({ userId: userId, interval: 3000, token: localStorage.getItem('jwtToken') });
+            // }
 
             return () => {
                 worker.terminate();
@@ -61,7 +64,7 @@ export function useTokenVerification({ validURL, unValidURL, noti = false, notiS
         } else {
             verifyToken();
         }
-    }, [session, router]);
+    }, [userId, router]);
 
     return { loading, error };
 }

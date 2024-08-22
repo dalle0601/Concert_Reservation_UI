@@ -37,7 +37,7 @@ export function LoginForm({ handleLogin }: LoginFormProps) {
 
                 if (token) {
                     try {
-                        await axios.post(
+                        const resToken = await axios.post(
                             'http://localhost:8080/user/token',
                             { userId },
                             {
@@ -47,11 +47,30 @@ export function LoginForm({ handleLogin }: LoginFormProps) {
                                 },
                             }
                         );
+                        setUserIdStore(userId);
+                        // result에 따라 다른 로직 수행
+                        if (
+                            resToken.data.message === '유효토큰이 발급되었습니다.' ||
+                            resToken.data.message === '이미 유효토큰이 발급되었습니다.'
+                        ) {
+                            // 성공적인 응답
+                            // const data = resToken.data; // 응답 데이터
+                            // if (data.success) {
+                            //     // 예를 들어, 응답 데이터에 success 필드가 있을 경우
+                            //     // 성공 로직
+                            handleLogin(userId);
+                            // } else {
+                            // 실패 로직 (예: 로그인 실패 등)
+
+                            // }
+                        } else {
+                            // 상태 코드가 200이 아닐 경우의 처리
+                            router.push('/wait');
+                            alert('대기화면으로 이동합니다.: ' + resToken.data.message);
+                        }
                     } catch (e: any) {
                         console.log('Error while fetching user token:', e);
                     }
-                    setUserIdStore(userId);
-                    handleLogin(userId);
                 } else {
                     alert('로그인에 실패했습니다.');
                 }

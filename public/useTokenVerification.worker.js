@@ -1,12 +1,9 @@
-const { default: axios } = require('axios');
-
 self.onmessage = async (e) => {
-    const { userId, interval } = e.data;
+    const { userId, interval, token } = e.data;
 
     const checkToken = async (userId) => {
-        const token = localStorage.getItem('jwtToken');
-
-        const response = await axios(`http://localhost:8080/user/${userId}/token`, {
+        const response = await fetch(`http://localhost:8080/user/${userId}/token`, {
+            method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
                 access: token,

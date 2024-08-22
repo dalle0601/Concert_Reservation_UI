@@ -2,7 +2,6 @@
 import { LoginForm } from '@/components/Login/LoginForm';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import { useTokenVerification } from '@/hooks/useTokenVerification';
 
 export default function HomePage() {
     const router = useRouter();

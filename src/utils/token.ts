@@ -1,11 +1,13 @@
 export const checkToken = async (
-    userId: string
+    userId: string | null,
+    jwtToken: string
 ): Promise<{ message: string; token: string; expiredTime: string; queuePosition: string }> => {
     try {
         const response = await fetch(`http://localhost:8080/user/${userId}/token`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
+                Authorization: `Bearer ${jwtToken}`,
+                access: jwtToken,
             },
         });
 

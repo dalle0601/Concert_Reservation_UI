@@ -11,7 +11,7 @@ interface Concert {
 interface StoreState {
     selectedConcert: Concert | null;
     setSelectedConcert: (concert: Concert) => void;
-    userId: String | null;
+    userId: string | null;
     setUserId: (id: string | null) => void;
 }
 

@@ -27,7 +27,6 @@ export function Header() {
             const response = await axios.post('http://localhost:8080/logout', {}, { withCredentials: true });
             if (response.status === 200) {
                 // 로그아웃 성공 처리
-                console.log('로그아웃 성공');
                 router.push('/');
             }
         } catch (error) {

@@ -6,7 +6,7 @@ import { DotLoader } from 'react-spinners';
 import { SectionTitle } from '@/components/common/SectionTitle';
 
 export default function WaitingPage() {
-    const [queuePosition, setQueuePosition] = useState<String>('0');
+    const [queuePosition, setQueuePosition] = useState<string>('0');
 
     const { loading, error } = useTokenVerification({
         validURL: '/concert',
